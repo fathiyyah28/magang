@@ -1,22 +1,18 @@
-import React, {useContext} from "react";
+import React, { useContext, useState } from "react";
 import "./StartupProjects.scss";
-import {bigProjects} from "../../portfolio";
-import {Fade} from "react-reveal";
+import { bigProjects } from "../../portfolio";
+import { Fade } from "react-reveal";
 import StyleContext from "../../contexts/StyleContext";
+import ProjectDetailModal from "./ProjectDetailModal";
 
 export default function StartupProject() {
-  function openUrlInNewTab(url) {
-    if (!url) {
-      return;
-    }
-    var win = window.open(url, "_blank");
-    win.focus();
-  }
+  const { isDark } = useContext(StyleContext);
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  const {isDark} = useContext(StyleContext);
   if (!bigProjects.display) {
     return null;
   }
+
   return (
     <Fade bottom duration={1000} distance="20px">
       <div className="main" id="projects">
@@ -43,51 +39,76 @@ export default function StartupProject() {
                       : "project-card project-card-light"
                   }
                 >
+                  {/* Large Screenshot Section */}
                   {project.image ? (
-                    <div className="project-image">
+                    <div className="project-image-wrapper">
                       <img
                         src={project.image}
                         alt={project.projectName}
-                        className="card-image"
-                      ></img>
+                        className="project-screenshot-large"
+                      />
                     </div>
                   ) : null}
-                  <div className="project-detail">
-                    <h5
-                      className={isDark ? "dark-mode card-title" : "card-title"}
-                    >
+
+                  {/* Card Content Section */}
+                  <div className="project-card-content">
+                    {/* Role Tag */}
+                    <div className="project-role-container">
+                      <span className="project-role-badge">{project.role}</span>
+                    </div>
+
+                    {/* Project Title */}
+                    <h3 className={isDark ? "dark-mode card-title" : "card-title"}>
                       {project.projectName}
-                    </h5>
-                    <p
-                      className={
-                        isDark ? "dark-mode card-subtitle" : "card-subtitle"
-                      }
-                    >
+                    </h3>
+
+                    {/* Tech Stack Badges */}
+                    <div className="tech-badge-container-inline">
+                      {project.techStack.map((tech, idx) => (
+                        <span key={idx} className="tech-badge-card">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Short Description */}
+                    <p className={isDark ? "dark-mode card-description" : "card-description"}>
                       {project.projectDesc}
                     </p>
-                    {project.footerLink ? (
-                      <div className="project-card-footer">
-                        {project.footerLink.map((link, i) => {
-                          return (
-                            <span
-                              key={i}
-                              className={
-                                isDark ? "dark-mode project-tag" : "project-tag"
-                              }
-                              onClick={() => openUrlInNewTab(link.url)}
-                            >
-                              {link.name}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    ) : null}
+
+                    {/* Custom Action Buttons Footer */}
+                    <div className="project-card-actions">
+                      <button
+                        className="action-button detail-button"
+                        onClick={() => setSelectedProject(project)}
+                      >
+                        Detail
+                      </button>
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={isDark ? "action-button github-button-dark" : "action-button github-button-light"}
+                        >
+                          <i className="fab fa-github"></i> GitHub
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
             })}
           </div>
         </div>
+
+        {/* Project Detail Modal Portal */}
+        {selectedProject && (
+          <ProjectDetailModal
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        )}
       </div>
     </Fade>
   );
