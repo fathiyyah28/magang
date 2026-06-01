@@ -27,7 +27,7 @@ const greeting = {
   ),
   resumeLink: "https://drive.google.com/file/d/15rGPKpEos8GpehLAM3qjAZ-YPNtsm8Nx/view?usp=sharing", // CV placeholder download link
   displayGreeting: true, // Set false to hide this section, defaults to true
-  avatar: require("./assets/images/fathiyyah.jpg"),
+  avatar: require("./assets/images/fathiyyah.png"),
   showAvatar: true
 };
 
